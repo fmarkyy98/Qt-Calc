@@ -1,6 +1,10 @@
 #include <QTime>
+#include <QString>
 #include "calcmainwindow.h"
 #include "ui_calcmainwindow.h"
+
+#define VALIDATE_MACRO(Operator, Show) { (lhsOperand Operator rhsOperand == solution ? "Correct: " : "Incorrect: ") + QString::number(this->lhsOperand) + Show + QString::number(this->rhsOperand) + " = " + QString::number(solution) + "\n" }
+//Validates if correct or not, and Build the QString for the output.
 
 CalcMainWindow::CalcMainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::CalcMainWindow)
 {
@@ -9,7 +13,6 @@ CalcMainWindow::CalcMainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui
     ui->lhsOperand_spinBox->setEnabled(false);
     ui->rhsOperand_spinBox->setEnabled(false);
     ui->solution_spinBox->setEnabled(false);
-
     connect(ui->addition_radioButton, SIGNAL(clicked()), this, SLOT(manageOperator()));
     connect(ui->subtraction_radioButton, SIGNAL(clicked()), this, SLOT(manageOperator()));
     connect(ui->multiplication_radioButton, SIGNAL(clicked()), this, SLOT(manageOperator()));
@@ -97,20 +100,16 @@ QString CalcMainWindow::solv(Operator o)
     switch (o)
     {
     case addition:
-        result += lhsOperand + rhsOperand == solution ? "Correct: " : "Incorrect: ";
-        result += QString::number(this->lhsOperand) + " + " + QString::number(this->rhsOperand) + " = " + QString::number(solution) + "\n";
+        result += VALIDATE_MACRO(+, " + ");
         break;
     case subtraction:
-        result += lhsOperand - rhsOperand == solution ? "Correct: " : "Incorrect: ";
-        result += QString::number(this->lhsOperand) + " - " + QString::number(this->rhsOperand) + " = " + QString::number(solution) + "\n";
+        result += VALIDATE_MACRO(-, " - ");
         break;
     case multiplication:
-        result += lhsOperand * rhsOperand == solution ? "Correct: " : "Incorrect: ";
-        result += QString::number(this->lhsOperand) + " * " + QString::number(this->rhsOperand) + " = " + QString::number(solution) + "\n";
+        result += VALIDATE_MACRO(*, " * ");
         break;
     case division:
-        result += lhsOperand / rhsOperand == solution ? "Correct: " : "Incorrect: ";
-        result += QString::number(this->lhsOperand) + " / " + QString::number(this->rhsOperand) + " = " + QString::number(solution) + "\n";
+        result += VALIDATE_MACRO(/, " / ");
         break;
     }
     QString currentText = ui->textEdit->toPlainText();
